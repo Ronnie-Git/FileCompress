@@ -1,11 +1,11 @@
 #include "../_include/FileCompress.h"
 
 void show_list() {
-	std::cout << "File	Compress List: " << std::endl;
+	std::cout << "Please select an action:" << std::endl;
 	std::cout << std::endl;
-	std::cout << "\t1.	Compress" << std::endl;
-	std::cout << "\t2.	UnCompress" << std::endl;
-	std::cout << "\t0.	Exit" << std::endl;
+	std::cout << "0.Exit" << std::endl;
+	std::cout << "1.Compress" << std::endl;
+	std::cout << "2.Decompress" << std::endl;
 	std::cout << std::endl;
 }
 

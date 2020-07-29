@@ -12,7 +12,7 @@ void FileCompress::Compress(const std::string &FilePath) {
 
 	std::string CompressFileName;
 	GetFileName(FilePath, CompressFileName);
-	CompressFileName += ".gl";
+	CompressFileName += ".gx";
 
 	FILE *output = fopen(CompressFileName.c_str(), "wb");
 	if (NULL == output) {
@@ -42,10 +42,16 @@ void FileCompress::UnCompress(const std::string &FilePath) {
 	if (begin == std::string::npos)
 		begin = -1;
 	size_t end = FilePath.find_last_of(".");
-	if (end == std::string::npos)
+	if (end == std::string::npos) {
 		end = FilePath.length();
+	} else {
+		if (FilePath.substr(end + 1, FilePath.length() - end - 1) != "gx") {
+			std::cout << FilePath << " Not a compressed file !" << std::endl;
+			exit(5);
+		}
+	}
 	std::string FileName = FilePath.substr(begin + 1, end - begin - 1);
-	FileName += Postfix;
+	if (Postfix.size() > 0) FileName += Postfix;
 	FILE *output = fopen(FileName.c_str(), "wb");
 	if (NULL == output) {
 		std::cout << FileName << " Can Not Open !" << std::endl;
@@ -130,10 +136,10 @@ void FileCompress::GetHead(FILE *src, std::string &Postfix) {
 	assert(src);
 
 	// 获取后缀名
-	unsigned char buf[_FILE_NAME_SIZE_];
+	unsigned char buf[_FILE_NAME_SIZE_] = {0};
 	int size = _FILE_NAME_SIZE_;
 	GetLine(src, buf, size);
-	Postfix += (char *)buf;
+	if (buf[0] != '\n') Postfix += (char *)buf;
 
 	// 获取行数
 	GetLine(src, buf, size);
@@ -184,8 +190,11 @@ void FileCompress::GetFileName(const std::string &FilePath, std::string &output)
 
 void FileCompress::GetPostfixName(const std::string &FilePath, std::string &output) {
 	size_t begin = FilePath.find_last_of(".");
-	if (begin != std::string::npos)
+	if (begin != std::string::npos) {
 		output = FilePath.substr(begin, FilePath.length() - begin);
+	} else {
+		output = "\n";
+	}
 
 	return ;
 }
